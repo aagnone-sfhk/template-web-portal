@@ -8,7 +8,7 @@ export default {
       },
       {
         protocol: 'https',
-        hostname: '*.public.blob.vercel-storage.com',
+        hostname: '*.herokuapps.ai',
         search: ''
       }
     ]

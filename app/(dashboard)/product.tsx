@@ -21,20 +21,22 @@ export function Product({ product }: { product: SelectProduct }) {
           alt="Product image"
           className="aspect-square rounded-md object-cover"
           height="64"
-          src={product.imageUrl}
+          src={product.imageUrl || '/placeholder.svg'}
           width="64"
         />
       </TableCell>
       <TableCell className="font-medium">{product.name}</TableCell>
       <TableCell>
         <Badge variant="outline" className="capitalize">
-          {product.status}
+          {product.displayStatus}
         </Badge>
       </TableCell>
-      <TableCell className="hidden md:table-cell">{`$${product.price}`}</TableCell>
-      <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
       <TableCell className="hidden md:table-cell">
-        {product.availableAt.toLocaleDateString("en-US")}
+        {product.price ? `$${product.price}` : 'N/A'}
+      </TableCell>
+      <TableCell className="hidden md:table-cell">{product.quantity || 0}</TableCell>
+      <TableCell className="hidden md:table-cell">
+        {product.lastModifiedDate ? product.lastModifiedDate.toLocaleDateString("en-US") : 'N/A'}
       </TableCell>
       <TableCell>
         <DropdownMenu>
@@ -49,6 +51,7 @@ export function Product({ product }: { product: SelectProduct }) {
             <DropdownMenuItem>Edit</DropdownMenuItem>
             <DropdownMenuItem>
               <form action={deleteProduct}>
+                <input type="hidden" name="id" value={product.id} />
                 <button type="submit">Delete</button>
               </form>
             </DropdownMenuItem>
