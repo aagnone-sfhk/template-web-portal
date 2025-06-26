@@ -80,6 +80,7 @@ export function useCustomChat({ model, reasoning, tools, historyLimit = 6 }: Use
       let accumulatedContent = '';
       let accumulatedReasoning = '';
       let accumulatedToolCalls: NonNullable<Message['tool_calls']> = [];
+      let isInToolCallSequence = false;
 
       let buffer = '';
 
@@ -101,28 +102,39 @@ export function useCustomChat({ model, reasoning, tools, historyLimit = 6 }: Use
             try {
               const chunk: StreamChunk = JSON.parse(data);
 
+              // Safety check for chunk structure
+              if (!chunk.choices || !Array.isArray(chunk.choices) || chunk.choices.length === 0) {
+                console.warn('Invalid chunk structure - missing or empty choices array');
+                continue;
+              }
+
+              const choice = chunk.choices[0];
+              if (!choice) {
+                console.warn('Invalid chunk structure - no choice at index 0');
+                continue;
+              }
+
               // Do nothing with tool messages
               if (
-                chunk.choices[0]?.delta?.role === 'tool' ||
-                chunk.choices[0]?.message?.role === 'tool'
+                choice.delta?.role === 'tool' ||
+                choice.message?.role === 'tool'
               ) {
                 continue;
               }
 
-              const content =
-                chunk.choices[0]?.delta?.content || chunk.choices[0]?.message?.content;
-              const reasoningDelta =
-                chunk.choices[0]?.delta?.reasoning?.thinking ||
-                chunk.choices[0]?.message?.reasoning?.thinking;
-              const toolCallsDelta =
-                chunk.choices[0]?.delta?.tool_calls || chunk.choices[0]?.message?.tool_calls;
+              const content = choice.delta?.content || choice.message?.content;
+              const reasoningDelta = choice.delta?.reasoning?.thinking || choice.message?.reasoning?.thinking;
+              const toolCallsDelta = choice.delta?.tool_calls || choice.message?.tool_calls;
+              const finishReason = choice.finish_reason;
 
               // Initialize placeholder messages
               const newMessages: Message[] = [];
               let agentMessage: Message | null = null;
               let assistantMessage: Message | null = null;
+
               // If this chunk has tool calls, accumulate them
               if (toolCallsDelta != null) {
+                isInToolCallSequence = true;
                 const newToolCalls = toolCallsDelta.filter(
                   newTool =>
                     !accumulatedToolCalls.some(existingTool => existingTool.id === newTool.id)
@@ -157,8 +169,17 @@ export function useCustomChat({ model, reasoning, tools, historyLimit = 6 }: Use
                 }
               }
 
+              // Handle content that's not part of tool calls
               if (content != null) {
-                // If there's no agent message, this content is part of the assistant message
+                // If we've finished tool calls and now have content, this is the final assistant message
+                if (!toolCallsDelta && isInToolCallSequence) {
+                  // Reset tool-related accumulation since we're now in the final response
+                  isInToolCallSequence = false;
+                  accumulatedToolMessage = '';
+                  accumulatedToolCalls = [];
+                }
+
+                // If there's no agent message (no tool calls), this content is part of the assistant message
                 if (agentMessage === null) {
                   accumulatedContent += content;
                 }
@@ -167,16 +188,35 @@ export function useCustomChat({ model, reasoning, tools, historyLimit = 6 }: Use
                   accumulatedReasoning += reasoningDelta;
                 }
 
-                assistantMessage = {
-                  role: 'assistant',
-                  content: accumulatedContent || '',
-                  reasoning:
-                    accumulatedReasoning.trim() !== ''
-                      ? { thinking: accumulatedReasoning }
-                      : undefined,
-                };
+                // Always create assistant message when we have content (unless it's purely tool content)
+                if (agentMessage === null || !isInToolCallSequence) {
+                  assistantMessage = {
+                    role: 'assistant',
+                    content: accumulatedContent || '',
+                    reasoning:
+                      accumulatedReasoning.trim() !== ''
+                        ? { thinking: accumulatedReasoning }
+                        : undefined,
+                  };
 
-                newMessages.push(assistantMessage);
+                  newMessages.push(assistantMessage);
+                }
+              }
+
+              // Handle completion cases where we need to ensure there's a final assistant message
+              if (finishReason === 'stop' || finishReason === 'end_turn') {
+                // If we've been in a tool call sequence but haven't created a final assistant message yet
+                if (isInToolCallSequence && !assistantMessage && accumulatedContent.trim() === '') {
+                  assistantMessage = {
+                    role: 'assistant',
+                    content: '',
+                    reasoning:
+                      accumulatedReasoning.trim() !== ''
+                        ? { thinking: accumulatedReasoning }
+                        : undefined,
+                  };
+                  newMessages.push(assistantMessage);
+                }
               }
 
               if (newMessages.length > 0) {
@@ -215,6 +255,15 @@ export function useCustomChat({ model, reasoning, tools, historyLimit = 6 }: Use
               }
             } catch (e) {
               console.error('Error parsing chunk:', e);
+              console.error('Raw chunk data:', data);
+              console.error('Line content:', line);
+              
+              // Try to continue processing other chunks instead of failing completely
+              // Only set error state if this is a critical parsing failure
+              if (data.trim() && !data.includes('heartbeat') && !data.includes('ping')) {
+                console.warn('Failed to parse non-heartbeat chunk, this might indicate a streaming issue');
+              }
+              continue;
             }
           }
         }
