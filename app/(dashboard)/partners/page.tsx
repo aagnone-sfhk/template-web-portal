@@ -31,7 +31,7 @@ export default async function PartnersPage(
         </TabsList>
         <div className="ml-auto flex items-center gap-2">
           <Button size="sm" variant="outline" className="h-8 gap-1" asChild>
-            <a href="https://connect.heroku.com/sync/cfd27e12-0b83-4b4c-87cc-7fc195ca45ba//mappings/e5946682-d2e0-4905-b3e4-afe46e84dd15" target="_blank">
+            <a href="https://connect.heroku.com/sync/cfd27e12-0b83-4b4c-87cc-7fc195ca45ba/mappings/e5946682-d2e0-4905-b3e4-afe46e84dd15" target="_blank">
               <HerokuLogo className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
               View in Heroku
