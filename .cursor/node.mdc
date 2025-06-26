@@ -1,0 +1,86 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Node.js Project Ruleset
+
+## Project Structure
+```
+project-root/
+├── client/              # Client-side code
+│   ├── components/      # UI components
+│   ├── lib/             # Client utility functions
+│   ├── hooks/           # React hooks (if using React)
+│   └── assets/          # Static assets (images, fonts, etc.)
+├── server/              # Server-side code
+│   ├── lib/             # Server library code
+│   ├── routes/          # API route handlers
+│   ├── middleware/      # Custom middleware
+│   └── config/          # Server configuration
+├── tests/               # Test files
+├── scripts/             # Build and utility scripts
+└── types/               # Shared TypeScript type definitions
+```
+
+## Technology Stack
+
+### Core Requirements
+- **Language**: TypeScript with `tsc` configuration and `tsx` for one-line executions
+- **HTTP Client**: Use native `fetch` or `undici` only (never use Axios or any other client)
+- **Testing**: Node.js native test runner only
+- **Development mode**: Use `--watch` flag, never use `nodemon`
+- **Database**: 
+  - PostgreSQL with `node-pg` driver (no ORMs)
+  - Redis: use `ioredis` when needed
+- **Server Framework**: Fastify 5.x (preferred over Express)
+- **Frontend Builder**: Vite for React projects
+- **Package manager**: Always use `pnpm`
+- **Configuration**: Use `.env` files with a centralized configuration module
+
+### Code Style
+- Follow StandardJS style with semicolons (`standard-semi`)
+- Use prettier and eslint@9 with appropriate plugins
+- Use TypeScript interfaces/types with descriptive names
+- Implement proper error handling with custom error classes
+- Prefix all Node.js core imports with `node:` (e.g., `import fs from 'node:fs'`)
+- Use async/await instead of Promises with .then()
+- Keep maximum line length to 100 characters
+
+### Development Workflow
+- Use ESM modules instead of CommonJS
+- Separate business logic from API handlers
+- Create `.env.example` with sample values for documentation
+- Implement structured logging with levels (development/production)
+- Use semantic versioning for releases
+- Document API endpoints with JSDoc comments
+- When adding a dependency install it to refresh the lock file, never just update the package.json
+
+### Database Practices
+- Write raw SQL queries using parameterized statements
+- Structure database interactions in dedicated repository modules
+- Implement connection pooling for efficiency
+- Use transactions for operations that require atomicity
+- Include database migration scripts
+- Avoid dynamic SQL generation when possible
+
+### Security Considerations
+- Validate all input data before processing using schema validation
+- Implement proper authentication and authorization mechanisms
+- Apply rate limiting on API endpoints
+- Set appropriate CORS policies
+- Use HTTPS in production environments
+- Implement Content Security Policy headers
+- Regularly update dependencies for security patches
+- Never store secrets in code or commit them to version control
+
+### Performance
+- Implement caching strategies for frequent database queries
+- Use streaming for large file operations
+- Monitor memory usage in production environments
+- Implement health check endpoints
+
+### Project Setup
+- Do not generate tests unless specifically requested
+- Do not generate README files unless specifically requested
+- Initialize Git repository with appropriate .gitignore

@@ -1,4 +1,7 @@
 export default {
+  experimental: {
+    dynamicIO: true,
+  },
   images: {
     remotePatterns: [
       {

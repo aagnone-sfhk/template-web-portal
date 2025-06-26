@@ -1,0 +1,98 @@
+---
+description: Heroku Development Best Practices
+globs: 
+alwaysApply: false
+---
+# Heroku and Salesforce / Agentforce Integration
+
+## OpenAPI Specification Requirements
+- **API Documentation**: Create a comprehensive OpenAPI spec 3.0 document in YAML format
+- **Human and Machine Readable**: Describe methods, objects, inputs, and outputs clearly for both developers and LLMs
+- **Required Fields**:
+  - Always define `operationId` on each method for proper reference
+  - Include detailed descriptions for all parameters and response objects
+  - Document expected error codes and responses
+  - Clearly define input and output object schemas
+- **JSON Compliance**: Ensure all APIs return valid, well-formed JSON responses
+- **Spec Location**: Store specification in an `api-spec.yaml` file at project root
+- **Salesforce Connection**: Use the `heroku salesforce:connect` command to establish a connection; the org alias can be defined based on the purpose of the app
+
+## Heroku AppLink Setup
+
+### Installation and Configuration
+Install the Heroku Integration plugin to enable Salesforce connectivity
+```
+heroku plugins:install @heroku-cli/plugin-integration
+```
+
+Provision the Heroku Integration add-on in your application
+```
+heroku addons:create heroku-integration --app {app-name}
+```
+
+Add the Heroku Integration buildpack
+```
+heroku buildpacks:add https://github.com/heroku/heroku-buildpack-heroku-integration-service-mesh
+```
+
+### Important Port Configuration Changes:
+1. Update your `Procfile` to include `heroku-integration-service-mesh` and set a STATIC port value:
+
+```
+web: APP_PORT=3000 heroku-integration-service-mesh {original-command}
+```
+
+2. If your process accepts port parameters, always pass the static value (e.g., 3000) directly, examples:
+
+Python with uvicorn
+```
+web: APP_PORT=3000 heroku-integration-service-mesh uvicorn -w 4 app:app --port=3000 
+```
+
+Python with gunicorn
+```
+web: APP_PORT=3000 heroku-integration-service-mesh gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --port=3000
+```
+
+Ruby with Puma
+```
+web: APP_PORT=3000 heroku-integration-service-mesh bundle exec puma -t 5:5 -p 3000
+```
+
+3. Always modify your application server code to use `APP_PORT` environment variable instead of `PORT` for binding to Heroku's web process.
+
+4. Trigger a new build and deploy to apply these changes, this can be done with an empty commit.
+
+### Salesforce Connection
+Connect to a Salesforce organization using the CLI (requires browser authentication)
+```
+heroku salesforce:connect {org-alias} --app {app-name} --store-as-run-as-user
+```
+**Note**: This command will open a browser window for Salesforce authentication and will wait until the connection is complete
+
+#### Check Existing Connections
+To check existing Salesforce connections 
+```
+heroku integration:connections --app {app-name}
+```
+
+### Import the API specification
+Import your OpenAPI specification into the connected Salesforce organization
+```
+heroku salesforce:import api-spec.yaml --app {app-name} --client-name {client-name} --org-name {org-alias}
+```
+
+**Client Naming Convention**: The `{client-name}` parameter should:
+- Follow the pattern: `{PurposeOfApi}Service` (e.g., FinanceService, CalculatorService)
+- Use PascalCase formatting
+- Be descriptive of the API's domain functionality
+- End with "Service" suffix for consistency
+
+### AppLink SDKs
+Do not use the AppLink SDKs unless you need to connect from the API to Salesforce.
+
+- Nodejs SDK: `@heroku/salesforce-sdk-nodejs`
+- Python SDK: `heroku_applink`: https://github.com/heroku/heroku_applink_python
+
+### API Testing Note
+Applications running with the AppLink `heroku-integration-service-mesh` are only accessible from Salesforce. Direct access attempts will not work.
