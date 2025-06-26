@@ -34,7 +34,7 @@ export function Partner({ partner }: { partner: SelectVendor }) {
           {/* Heroku Connect Link */}
           <Button size="sm" variant="ghost" className="h-8 w-8 p-0" asChild>
             <a 
-              href="https://connect.heroku.com/sync/077298f2-d51d-4f58-8ff8-271f0eb41aec/explorer/mappings/430740be-7fef-40c9-934b-e05bcca9d79e" 
+              href="https://connect.heroku.com/sync/cfd27e12-0b83-4b4c-87cc-7fc195ca45ba//explorer/mappings/e5946682-d2e0-4905-b3e4-afe46e84dd15" 
               target="_blank"
               title="View in Heroku Connect"
             >

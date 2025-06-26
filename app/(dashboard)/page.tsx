@@ -272,7 +272,7 @@ export default async function DashboardPage() {
                   </a>
                 </Button>
                 <Button asChild variant="ghost" size="sm" className="w-full justify-start">
-                  <a href="https://connect.heroku.com/sync/077298f2-d51d-4f58-8ff8-271f0eb41aec/mappings" target="_blank" rel="noopener noreferrer">
+                  <a href="https://connect.heroku.com/sync/cfd27e12-0b83-4b4c-87cc-7fc195ca45ba//mappings" target="_blank" rel="noopener noreferrer">
                     <HerokuLogo className="h-4 w-4 mr-2" />
                     Heroku Connect
                     <ArrowUpRight className="ml-auto h-4 w-4" />
