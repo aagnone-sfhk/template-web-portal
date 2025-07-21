@@ -46,7 +46,7 @@ export default function RootLayout({
               <ChatProvider welcomeMessage={env.NEXT_PUBLIC_APP_INTRO_MESSAGE}>
                 <header className="flex justify-between items-center p-4 gap-4 h-16 ml-14">
                   <div className="text-2xl font-bold">
-                    Next Gen Admin Portal
+                  {env.NEXT_PUBLIC_APP_TITLE}
                   </div>
                   <div className="flex gap-4">
                     <SignedOut>

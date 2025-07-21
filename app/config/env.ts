@@ -11,7 +11,7 @@ const envSchema = z.object({
   INFERENCE_MODEL_ID: z.string().min(1),
   
   // UI Configuration (shared between client and server)
-  NEXT_PUBLIC_APP_TITLE: z.string().min(1).default("AI Chat Assistant"),
+  NEXT_PUBLIC_APP_TITLE: z.string().min(1).default("Next Gen Portal"),
   NEXT_PUBLIC_APP_DESCRIPTION: z.string().min(1).default("Your intelligent AI assistant powered by Salesforce Einstein"),
   NEXT_PUBLIC_APP_INTRO_MESSAGE: z.string().min(1).default("Hello! I'm your AI assistant. How can I help you today?"),
   NEXT_PUBLIC_EVENT_HUB_URL: z.string().min(1).default("https://hub.herokuapps.ai"),
