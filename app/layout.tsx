@@ -61,8 +61,6 @@ export default function RootLayout({
                 {children}
                 <ChatBubble
                   welcomeMessage={env.NEXT_PUBLIC_APP_INTRO_MESSAGE}
-                  logo={env.NEXT_PUBLIC_LOGO}
-                  logoAlt={env.NEXT_PUBLIC_LOGO_ALT}
                 />
               </ChatProvider>
             </SocketProvider>

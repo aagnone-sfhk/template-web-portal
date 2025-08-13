@@ -60,6 +60,14 @@ export const config: Config = {
       type: 'heroku_tool',
       name: 'code_exec_go',
     },
+    postgres_get_schema: {
+      type: 'heroku_tool',
+      name: 'postgres_get_schema',
+    },
+    postgres_run_query: {
+      type: 'heroku_tool',
+      name: 'postgres_run_query',
+    },
   },
 };
 

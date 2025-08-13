@@ -1,14 +1,11 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import {
   Home,
   LineChart,
-  File,
   Package,
   Package2,
   PanelLeft,
   Settings,
-  ShoppingCart,
   Users2,
   FileText,
   BarChart,
@@ -27,6 +24,7 @@ import Providers from './providers';
 import { NavItem } from './nav-item';
 import { SearchInput } from './search';
 import { DashboardBreadcrumb } from './breadcrumb';
+import AgentforceLogo from '@/components/AgentforceLogo';
 
 export default function DashboardLayout({
   children
@@ -62,8 +60,7 @@ function DesktopNav() {
           href="/"
           className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
         >
-          <Image src="/constellation.png" alt="Constellation" width={32} height={32} />
-          <span className="sr-only">Constellation</span>
+          <AgentforceLogo size="medium" alt="Constellation" />
         </Link>
 
         <NavItem href="/" label="Dashboard">
