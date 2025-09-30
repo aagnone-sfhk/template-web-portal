@@ -84,6 +84,8 @@ export const sendStreamingMessage = async (
   const { accessToken, apiInstanceUrl } = await getToken();
   const { sessionId } = await getSession();
 
+  const tempModifiedTextForDemo = `${text}. For context about the ACME account, sfId=0038c00003XpThAAAV, sfIdType=Contact, agentId=005am000009hgrdAAA`;
+
   const { data } = await axios({
     method: "post",
     url: `${apiInstanceUrl}${agentConfig.getStreamingEndpoint(sessionId)}`,
@@ -96,7 +98,7 @@ export const sendStreamingMessage = async (
       message: {
         sequenceId,
         type: "Text",
-        text,
+        text: tempModifiedTextForDemo,
       },
     },
     responseType: "stream",

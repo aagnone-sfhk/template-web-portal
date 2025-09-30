@@ -17,7 +17,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_EVENT_HUB_URL: z.string().min(1).default("https://hub.herokuapps.ai"),
   NEXT_PUBLIC_LOGO: z.string().min(1).default("https://hub.herokuapps.ai/images/AmazonBubble.png"),
   NEXT_PUBLIC_AVATAR: z.string().min(1).default("/constellation.png"),
-  NEXT_PUBLIC_LOGO_ALT: z.string().min(1).default("Amazon"),
+  NEXT_PUBLIC_LOGO_ALT: z.string().min(1).default("Admin Portal"),
 });
 
 type Env = z.infer<typeof envSchema>;

@@ -24,7 +24,7 @@ class SocketClient {
     }
 
     console.debug("clientEnv.NEXT_PUBLIC_EVENT_HUB_URL", clientEnv.NEXT_PUBLIC_EVENT_HUB_URL);
-    this.socket = io(clientEnv.NEXT_PUBLIC_EVENT_HUB_URL.replace("https://", "http://").replace("http://", ""), {
+    this.socket = io(clientEnv.NEXT_PUBLIC_EVENT_HUB_URL, {
       path: "/socket.io/",
       query: {
         sessionId,
@@ -33,13 +33,10 @@ class SocketClient {
     });
 
     this.socket.on("connect", () => {
-      console.log("Socket connected");
       this.socket?.emit("initialize", sessionId);
     });
 
-    this.socket.on("disconnect", () => {
-      console.log("Socket disconnected");
-    });
+    this.socket.on("disconnect", () => {});
 
     this.socket.on("error", (error: Error) => {
       console.error("Socket error:", error);
@@ -69,19 +66,22 @@ class SocketClient {
     // Store the callback
     this.messageCallbacks.push(callback);
 
-    this.socket.on("message", (data: unknown) => {
+    // Handler function for processing chat messages
+    const handleChatMessage = (data: unknown, eventType: string) => {
       try {
-        console.log("raw data", data);
         const parsed = MessageSchema.parse(data);
-        console.log("parsed", parsed);
         if (parsed.type === "chat" && !this.receivedMessageIds.has(parsed.id)) {
           this.receivedMessageIds.add(parsed.id);
           callback(parsed);
         }
       } catch (error) {
-        console.error("Failed to parse message:", error);
+        console.error(`Failed to parse ${eventType} message:`, error);
       }
-    });
+    };
+
+    // Listen for both "message" and "chat" events
+    this.socket.on("message", (data: unknown) => handleChatMessage(data, "message"));
+    this.socket.on("chat", (data: unknown) => handleChatMessage(data, "chat"));
   }
 
   public onVendorOnboard(callback: (onboard: VendorOnboard) => void) {

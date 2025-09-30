@@ -52,42 +52,29 @@ export const ChatProvider = ({ children, welcomeMessage }: ChatProviderProps) =>
   }, [hasUserSentMessage]);
 
   const openChat = () => {
-    console.log("Opening chat from ChatContext");
     setIsOpen(true);
     setHasNotification(false);
   };
 
   const closeChat = () => {
-    console.log("Closing chat from ChatContext");
     setIsOpen(false);
   };
 
   const addMessage = (type: "ai" | "user", message: string, timestamp: string, subtype?: "productBackfilled" | "chat") => {
-    console.log("Adding message to chat", { type, message, timestamp, subtype, currentMessages: messages });
     // If this is a user message, mark that the user has sent a message
     if (type === "user") {
       setHasUserSentMessage(true);
     }
     
-    // If this is a product backfilled message and the chat is not open, set the notification flag
-    if (subtype === "productBackfilled" && !isOpen) {
-      setHasNotification(true);
-    }
-    
-    setMessages(prev => {
-      console.log("Previous messages:", prev);
-      const newMessages = [
-        ...prev,
-        {
-          type,
-          message,
-          timestamp,
-          subtype,
-        },
-      ];
-      console.log("New messages:", newMessages);
-      return newMessages;
-    });
+    setMessages(prev => [
+      ...prev,
+      {
+        type,
+        message,
+        timestamp,
+        subtype,
+      },
+    ]);
   };
 
   const sendMessage = (message: string) => {
@@ -189,14 +176,11 @@ export const ChatProvider = ({ children, welcomeMessage }: ChatProviderProps) =>
   };
 
   const handleProductBackfilled = useCallback((message: ProductBackfilled) => {
-    console.log("Handling product backfilled message:", message);
     const currentMessages = messagesRef.current;
     const hasUserMessages = currentMessages.some(msg => msg.type === "user");
-    console.log("Current messages:", currentMessages, "Has user messages:", hasUserMessages);
     
     if (!hasUserMessages) {
       // Replace welcome message but keep any other messages
-      console.log("No user messages yet, replacing welcome message");
       setMessages(prev => [
         {
           type: "ai" as const,
@@ -208,7 +192,6 @@ export const ChatProvider = ({ children, welcomeMessage }: ChatProviderProps) =>
       ]);
     } else {
       // Keep all existing messages and add new one
-      console.log("User has sent messages, appending to conversation");
       setMessages(prev => [...prev, {
         type: "ai" as const,
         message: message.data.content,
@@ -217,12 +200,11 @@ export const ChatProvider = ({ children, welcomeMessage }: ChatProviderProps) =>
       }]);
     }
 
-    // Handle notification and chat opening
+    // Handle notification for socket message
     if (!isOpen) {
       setHasNotification(true);
-      openChat();
     }
-  }, [isOpen, openChat]);
+  }, [isOpen]);
 
   // Initialize messages with welcome message
   useEffect(() => {
@@ -237,13 +219,11 @@ export const ChatProvider = ({ children, welcomeMessage }: ChatProviderProps) =>
 
   // Set up socket listeners once
   useEffect(() => {
-    console.log("Setting up socket event listeners in ChatContext");
-    
     const messageHandler = (message: ChatMessageContent) => {
-      console.log("Received message via socket:", message);
       addMessage("ai", message.data.content, message.data.timestamp, "chat");
+      // Set notification when message arrives and chat is closed
       if (!isOpen) {
-        openChat();
+        setHasNotification(true);
       }
     };
 
@@ -253,10 +233,6 @@ export const ChatProvider = ({ children, welcomeMessage }: ChatProviderProps) =>
 
     socketClient.onMessage(messageHandler);
     socketClient.onProductBackfilled(productBackfilledHandler);
-    
-    return () => {
-      console.log("Cleaning up socket event listeners in ChatContext");
-    };
   }, [socketClient, isOpen, handleProductBackfilled, addMessage]);
 
   useEffect(() => {

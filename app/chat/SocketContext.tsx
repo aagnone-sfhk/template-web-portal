@@ -21,7 +21,7 @@ type SocketProviderProps = {
   sessionId?: string;
 };
 
-export const SocketProvider = ({ children, sessionId = "amazon" }: SocketProviderProps) => {
+export const SocketProvider = ({ children, sessionId = "portal" }: SocketProviderProps) => {
   useEffect(() => {
     // Connect to socket when the provider mounts
     socketClient.connect(sessionId);

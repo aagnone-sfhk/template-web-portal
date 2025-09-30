@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import AIAssistantButton from './AIAssistantButton';
 import { HerokuLogo } from '@/components/icons';
 
 export default async function DashboardPage() {
@@ -37,12 +38,7 @@ export default async function DashboardPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button asChild>
-            <Link href="/chat">
-              <MessageCircleCode className="mr-2 h-4 w-4" />
-              AI Assistant
-            </Link>
-          </Button>
+          <AIAssistantButton />
         </div>
       </div>
 
