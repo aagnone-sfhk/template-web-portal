@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import clsx from 'clsx';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
-import { PaperAirplaneIcon, StopIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { PaperAirplaneIcon, StopIcon, TrashIcon, ClipboardIcon } from '@heroicons/react/24/solid';
 import { RiAiGenerate } from 'react-icons/ri';
 import { LoadingDots } from '@/components/ui/LoadingDots';
 import Image from 'next/image';
@@ -231,8 +231,20 @@ const Chat: React.FC = () => {
             )}
           >
             {messages.length === 0 && !isLoading && (
-              <div className="text-center text-gray-500 w-full">
-                What can I help you with?
+              <div className="text-center text-gray-500 w-full flex items-center justify-center gap-2">
+                <span>What can I help you with?</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      "Prepping to reach out this vendor: Bob's Flip Flop Shop. Pull the vendor's website info to see the latest and verify if I can contact them at 678-525-2059."
+                    );
+                  }}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  title="Copy sample prompt"
+                >
+                  <ClipboardIcon className="h-4 w-4" />
+                </button>
               </div>
             )}
             {messages.map((message: Message) => (
