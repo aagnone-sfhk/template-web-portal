@@ -17,7 +17,6 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip';
-import { Analytics } from '@vercel/analytics/react';
 import { User } from './user';
 import Providers from './providers';
 import { NavItem } from './nav-item';
@@ -45,7 +44,6 @@ export default function DashboardLayout({
             {children}
           </main>
         </div>
-        <Analytics />
       </main>
     </Providers>
   );
