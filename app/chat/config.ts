@@ -7,6 +7,7 @@ export interface AgentForceConfig {
     clientSecret: string;
   };
   agentId: string;
+  isConfigured: boolean;
 }
 
 class AgentForceConfiguration implements AgentForceConfig {
@@ -16,14 +17,23 @@ class AgentForceConfiguration implements AgentForceConfig {
     clientSecret: string;
   };
   readonly agentId: string;
+  readonly isConfigured: boolean;
 
   constructor() {
-    this.baseUrl = env.SF_MY_DOMAIN_URL.replace("https://", "");
+    // Check if Salesforce AgentForce is configured
+    this.isConfigured = !!(
+      env.SF_MY_DOMAIN_URL &&
+      env.SF_CONSUMER_KEY &&
+      env.SF_CONSUMER_SECRET &&
+      env.SF_AGENT_ID
+    );
+
+    this.baseUrl = env.SF_MY_DOMAIN_URL?.replace("https://", "") ?? "";
     this.credentials = {
-      clientId: env.SF_CONSUMER_KEY,
-      clientSecret: env.SF_CONSUMER_SECRET,
+      clientId: env.SF_CONSUMER_KEY ?? "",
+      clientSecret: env.SF_CONSUMER_SECRET ?? "",
     };
-    this.agentId = env.SF_AGENT_ID;
+    this.agentId = env.SF_AGENT_ID ?? "";
   }
 
   getAuthEndpoint(): string {
@@ -47,4 +57,4 @@ class AgentForceConfiguration implements AgentForceConfig {
   }
 }
 
-export const agentConfig = new AgentForceConfiguration(); 
+export const agentConfig = new AgentForceConfiguration();

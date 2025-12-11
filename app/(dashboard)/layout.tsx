@@ -6,7 +6,6 @@ import {
   Package2,
   PanelLeft,
   Settings,
-  Users2,
   FileText,
   BarChart,
   MessageCircleCodeIcon
@@ -60,7 +59,7 @@ function DesktopNav() {
           href="/"
           className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
         >
-          <AgentforceLogo size="medium" alt="Constellation" />
+          <AgentforceLogo size="medium" alt="Admin Portal" />
         </Link>
 
         <NavItem href="/" label="Dashboard">
@@ -71,17 +70,13 @@ function DesktopNav() {
           <MessageCircleCodeIcon className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/partners" label="Partners">
-          <Users2 className="h-5 w-5" />
+        <NavItem href="/items" label="Items">
+          <Package className="h-5 w-5" />
         </NavItem>
 
         <NavItem href="#" label="Applications">
           <FileText className="h-5 w-5" />
         </NavItem>
-
-        {/* <NavItem href="/products" label="Products">
-          <Package className="h-5 w-5" />
-        </NavItem> */}
 
         <NavItem href="#" label="Reports">
           <BarChart className="h-5 w-5" />
@@ -121,14 +116,7 @@ function MobileNav() {
             className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
           >
             <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
-            <span className="sr-only">Vercel</span>
-          </Link>
-          <Link
-            href="/partners"
-            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-          >
-            <Users2 className="h-5 w-5" />
-            Partners
+            <span className="sr-only">Admin Portal</span>
           </Link>
           <Link
             href="/"
@@ -136,6 +124,20 @@ function MobileNav() {
           >
             <Home className="h-5 w-5" />
             Dashboard
+          </Link>
+          <Link
+            href="/chat"
+            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+          >
+            <MessageCircleCodeIcon className="h-5 w-5" />
+            Chat
+          </Link>
+          <Link
+            href="/items"
+            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+          >
+            <Package className="h-5 w-5" />
+            Items
           </Link>
           <Link
             href="#"
@@ -151,17 +153,8 @@ function MobileNav() {
             <BarChart className="h-5 w-5" />
             Reports
           </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-4 px-2.5 text-foreground"
-          >
-            <Package className="h-5 w-5" />
-            Products
-          </Link>
         </nav>
       </SheetContent>
     </Sheet>
   );
 }
-
-

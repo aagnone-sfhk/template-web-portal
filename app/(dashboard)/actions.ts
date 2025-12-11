@@ -1,12 +1,13 @@
 'use server';
 
-import { deleteProductById } from '@/lib/db';
+import { deleteItemById } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 
-export async function deleteProduct(formData: FormData) {
+export async function deleteItem(formData: FormData) {
   const id = Number(formData.get('id'));
   if (id && !isNaN(id)) {
-    await deleteProductById(id);
+    await deleteItemById(id);
     revalidatePath('/');
+    revalidatePath('/items');
   }
 }
