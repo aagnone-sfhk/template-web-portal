@@ -1,0 +1,39 @@
+---
+description: How to add Heroku Postgres databases as MCP servers for Cursor AI
+globs: scripts/add-heroku-postgres-mcp.sh, .cursor/mcp.json
+alwaysApply: false
+---
+
+- **Add Heroku Postgres as MCP Server:**
+  - Use the `Add Heroku Postgres MCP Server` task from Command Palette
+  - Or run directly: `./scripts/add-heroku-postgres-mcp.sh <app-name> [server-name]`
+
+- **How It Works:**
+  - Fetches `DATABASE_URL` from the specified Heroku app
+  - Adds a postgres-mcp server configuration to `.cursor/mcp.json`
+  - Uses restricted access mode for safety
+
+- **Usage Examples:**
+  ```bash
+  # Add MCP server from app "my-app" (creates server named "postgres-my-app")
+  ./scripts/add-heroku-postgres-mcp.sh my-app
+  
+  # Add with custom server name
+  ./scripts/add-heroku-postgres-mcp.sh my-app my-custom-db
+  ```
+
+- **Using the Task:**
+  1. Press `Cmd+Shift+P` → "Tasks: Run Task"
+  2. Select "Add Heroku Postgres MCP Server"
+  3. Enter the Heroku app name when prompted
+  4. Optionally enter a custom MCP server name
+  5. Reload Cursor window to activate
+
+- **Requirements:**
+  - Heroku CLI installed and logged in
+  - `jq` installed (`brew install jq`)
+  - Access to the target Heroku app
+
+- **Configuration Location:**
+  - Project-level: `.cursor/mcp.json` (created if missing)
+  - Server uses `uvx postgres-mcp --access-mode=restricted`

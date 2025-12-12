@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "postgres-template-web-portal": {
+      "command": "uvx",
+      "args": [
+        "postgres-mcp",
+        "--access-mode=restricted"
+      ],
+      "env": {
+        "DATABASE_URI": "postgres://u6piaeprit88jp:p4467daa4f11da6131f95b0a3ba70172eb034b4ffb83e2fe3cc987be32f2029a6@ec2-35-173-44-150.compute-1.amazonaws.com:5432/degn1eit0g5uu9"
+      }
+    }
+  }
+}

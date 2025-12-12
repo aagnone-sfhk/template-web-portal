@@ -1,0 +1,17 @@
+---
+alwaysApply: true
+---
+
+Use the Heroku app's config vars as the source of truth for all environment variables.
+
+You can pull them with the following command into a .env file, assuming you have a single git remote configured:
+
+```
+heroku config -s > .env
+```
+
+If you have multiple git remotes, you can use the following command to pull the config vars for a specific app:
+
+```
+heroku config --app <app-name> -s > .env
+```
