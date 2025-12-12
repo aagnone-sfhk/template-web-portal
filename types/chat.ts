@@ -118,5 +118,6 @@ export interface UseCustomChatProps {
   model: ModelType;
   reasoning: boolean;
   tools: ToolType[];
+  toolDefinitions?: Tool[];
   historyLimit?: number;
 }

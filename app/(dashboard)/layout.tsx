@@ -17,18 +17,21 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip';
-import { User } from './user';
+import { UserMenu } from '@/components/ui/UserMenu';
+import { getUser } from '@/lib/auth';
 import Providers from './providers';
 import { NavItem } from './nav-item';
 import { SearchInput } from './search';
 import { DashboardBreadcrumb } from './breadcrumb';
 import AgentforceLogo from '@/components/AgentforceLogo';
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
+  const user = await getUser();
+
   return (
     <Providers>
       <main className="flex min-h-[calc(100vh-4rem)] w-full flex-col bg-muted/40">
@@ -38,7 +41,7 @@ export default function DashboardLayout({
             <MobileNav />
             <DashboardBreadcrumb />
             <SearchInput />
-            <User />
+            {user && <UserMenu username={user.name} />}
           </header>
           <main className="flex-1 gap-2 p-4 sm:px-6 sm:py-0 md:gap-4 bg-muted/40">
             {children}

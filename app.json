@@ -1,0 +1,53 @@
+{
+  "name": "Web Portal Template",
+  "description": "A modern admin dashboard with AI chat and PostgreSQL",
+  "keywords": ["next.js", "react", "typescript", "postgres", "ai", "heroku"],
+  "website": "https://github.com/heroku/template-web-portal",
+  "repository": "https://github.com/heroku/template-web-portal",
+  "stack": "heroku-24",
+  "buildpacks": [
+    { "url": "heroku/nodejs" }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql:essential-0",
+      "as": "DATABASE"
+    }
+  ],
+  "env": {
+    "AUTH_USERNAME": {
+      "description": "Username for portal authentication",
+      "required": true
+    },
+    "AUTH_PASSWORD": {
+      "description": "Password for portal authentication",
+      "required": true
+    },
+    "NEXT_PUBLIC_APP_TITLE": {
+      "description": "Application title displayed in header",
+      "value": "Partner Portal"
+    },
+    "NEXT_PUBLIC_APP_DESCRIPTION": {
+      "description": "Application description",
+      "value": "Your intelligent AI assistant"
+    },
+    "NEXT_PUBLIC_APP_INTRO_MESSAGE": {
+      "description": "Welcome message for AI chat",
+      "value": "Hello! I'm your AI assistant. How can I help you today?"
+    },
+    "NEXT_PUBLIC_LOGO": {
+      "description": "Path to logo image",
+      "value": "/constellation.png"
+    },
+    "NEXT_PUBLIC_AVATAR": {
+      "description": "Path to chat avatar image",
+      "value": "/constellation.png"
+    }
+  }
+}

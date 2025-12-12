@@ -124,7 +124,8 @@ const Chat: React.FC = () => {
   } = useCustomChat({
     model: selectedModel,
     reasoning: useReasoning,
-    tools: selectedTools
+    tools: selectedTools,
+    toolDefinitions: allTools
   });
 
   const {

@@ -6,7 +6,7 @@ A modern, full-featured admin dashboard template built with Next.js 15, featurin
 
 - **Framework**: [Next.js 15](https://nextjs.org) (App Router)
 - **Language**: [TypeScript](https://www.typescriptlang.org)
-- **Auth**: [Clerk](https://clerk.com)
+- **Auth**: Simple username/password (cookie-based)
 - **Database**: [PostgreSQL](https://www.postgresql.org) with [Drizzle ORM](https://orm.drizzle.team)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com)
 - **Components**: [Shadcn UI](https://ui.shadcn.com)
@@ -17,7 +17,7 @@ A modern, full-featured admin dashboard template built with Next.js 15, featurin
 - 📊 Dashboard with customizable stats and activity feeds
 - 💬 AI Chat assistant with multiple model support
 - 📋 Generic items list view with pagination and search
-- 🔐 Authentication via Clerk
+- 🔐 Simple username/password authentication
 - 🎨 Clean, responsive UI with dark mode support
 - 🔧 MCP (Model Context Protocol) server integration
 
@@ -28,7 +28,7 @@ A modern, full-featured admin dashboard template built with Next.js 15, featurin
 - Node.js 18+
 - pnpm
 - PostgreSQL database
-- Clerk account (for auth)
+- Auth credentials (AUTH_USERNAME/AUTH_PASSWORD env vars)
 
 ### Installation
 

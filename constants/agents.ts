@@ -9,6 +9,9 @@ export const HEROKU_TOOLS: Tool[] = [
   { id: 'code_exec_node', name: 'Node.js', icon: SiNodedotjs, type: 'heroku' },
   { id: 'code_exec_ruby', name: 'Ruby', icon: SiRuby, type: 'heroku' },
   { id: 'code_exec_go', name: 'Go', icon: SiGo, type: 'heroku' },
+  // Postgres tools hidden until follower database is configured
+  // { id: 'postgres_get_schema', name: 'DB Schema', icon: SiPostgresql, type: 'heroku', description: 'Get Postgres database schema' },
+  // { id: 'postgres_run_query', name: 'DB Query', icon: SiPostgresql, type: 'heroku', description: 'Run read-only SQL queries' },
 ];
 
 export interface AgentPreset {
@@ -21,6 +24,7 @@ export interface AgentPreset {
 }
 
 export const AGENT_PRESETS: AgentPreset[] = [
+  // Database preset hidden until follower database is configured
   {
     id: 'code-exec',
     name: 'Code Executor',

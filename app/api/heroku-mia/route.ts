@@ -35,8 +35,11 @@ export async function POST(req: NextRequest) {
     const systemPrompt = config.system_prompt;
     const hasTools = tools && tools.length > 0;
 
+    // Use the actual model ID from config (e.g., 'claude-4-5-sonnet' from INFERENCE_MODEL_ID)
+    const actualModelId = modelConfig.MODEL_ID || model;
+    
     const requestBody: ChatRequestBody = {
-      model: model,
+      model: actualModelId,
       messages: [
         {
           role: 'system',
@@ -54,22 +57,26 @@ export async function POST(req: NextRequest) {
 
       // Process all tools - both Heroku and MCP
       for (const tool of tools) {
-        if (tool.type === 'mcp' || !tool.type) {
-          // MCP tool or default to MCP if type not specified
+        // Check if this is a known Heroku tool by looking it up in config
+        const herokuTool = getTool(tool.name);
+        
+        if (herokuTool) {
+          // Known Heroku tool - use the config definition
+          requestTools.push({
+            type: herokuTool.type,
+            name: herokuTool.name,
+            runtime_params: herokuTool.runtime_params || {},
+          });
+        } else if (tool.type === 'mcp') {
+          // Explicitly marked as MCP tool
           requestTools.push({
             type: 'mcp',
             name: tool.name,
             description: tool.description,
           });
-        } else if (tool.type === 'heroku') {
-          // Heroku tool - look up in config
-          const herokuTool = getTool(tool.name);
-          if (herokuTool) {
-            requestTools.push({
-              type: herokuTool.type,
-              name: herokuTool.name,
-            });
-          }
+        } else {
+          // Unknown tool type - log warning and skip
+          console.warn(`Unknown tool type for tool: ${tool.name}. Skipping.`);
         }
       }
 

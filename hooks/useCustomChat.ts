@@ -7,7 +7,7 @@ const filterMessages = (messages: Message[]) => {
   );
 };
 
-export function useCustomChat({ model, reasoning, tools, historyLimit = 6 }: UseCustomChatProps) {
+export function useCustomChat({ model, reasoning, tools, toolDefinitions = [], historyLimit = 6 }: UseCustomChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [error, setError] = useState<ChatError | null>(null);
@@ -49,6 +49,16 @@ export function useCustomChat({ model, reasoning, tools, historyLimit = 6 }: Use
       const filteredMessages = filterMessages([...previousMessages, userMessage]);
       const recentMessages = filteredMessages.slice(-historyLimit);
 
+      // Build tools array with type information from definitions
+      const toolsWithTypes = tools.map(toolId => {
+        const definition = toolDefinitions.find(t => t.id === toolId);
+        return {
+          name: toolId,
+          type: definition?.type,
+          description: definition?.description,
+        };
+      });
+
       const response = await fetch('/api/heroku-mia', {
         method: 'POST',
         headers: {
@@ -58,7 +68,7 @@ export function useCustomChat({ model, reasoning, tools, historyLimit = 6 }: Use
           messages: recentMessages,
           model,
           reasoning,
-          tools: tools.map(toolId => ({ name: toolId })),
+          tools: toolsWithTypes,
         }),
         signal: abortControllerRef.current.signal,
       });
