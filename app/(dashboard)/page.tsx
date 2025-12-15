@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { getDashboardStats, getRecentActivity } from '@/lib/db';
+import { getDashboardStats, getRecentActivity, ensureItemsTable } from '@/lib/db';
 import { 
   Users2, 
   Package, 
@@ -45,6 +45,9 @@ function getExternalLinks() {
 }
 
 export default async function DashboardPage() {
+  // Ensure the items table exists before querying
+  await ensureItemsTable();
+
   const [stats, activity] = await Promise.all([
     getDashboardStats(),
     getRecentActivity()

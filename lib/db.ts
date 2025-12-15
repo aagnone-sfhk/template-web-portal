@@ -39,6 +39,80 @@ export const items = pgTable('items', {
 export type SelectItem = typeof items.$inferSelect;
 export type InsertItem = typeof items.$inferInsert;
 
+// Ensures the items table exists in the database and seeds it with sample data
+export async function ensureItemsTable(): Promise<void> {
+  await client.query(`
+    CREATE TABLE IF NOT EXISTS public.items (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(255),
+      description TEXT,
+      status VARCHAR(50) DEFAULT 'active',
+      website VARCHAR(255),
+      image_url VARCHAR(255),
+      is_deleted BOOLEAN DEFAULT FALSE,
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+
+  // Add unique constraint on name if it doesn't exist
+  await client.query(`
+    DO $$
+    BEGIN
+      IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'items_name_unique'
+      ) THEN
+        ALTER TABLE public.items ADD CONSTRAINT items_name_unique UNIQUE (name);
+      END IF;
+    END $$;
+  `);
+
+  // Check if table is empty and seed with sample data
+  const result = await client.query('SELECT COUNT(*) FROM public.items');
+  const itemCount = parseInt(result.rows[0].count, 10);
+
+  if (itemCount === 0) {
+    const seedItems = [
+      { name: 'Sales Cloud', description: 'Complete CRM platform for sales teams to manage leads, opportunities, and customer relationships', status: 'active', website: 'https://www.salesforce.com/products/sales-cloud/overview/' },
+      { name: 'Service Cloud', description: 'Customer service platform with case management, knowledge base, and omni-channel support', status: 'active', website: 'https://www.salesforce.com/products/service-cloud/overview/' },
+      { name: 'Marketing Cloud', description: 'Digital marketing platform for email, mobile, social, and advertising campaigns', status: 'active', website: 'https://www.salesforce.com/products/marketing-cloud/overview/' },
+      { name: 'Commerce Cloud', description: 'E-commerce platform for B2C and B2B online storefronts and order management', status: 'active', website: 'https://www.salesforce.com/products/commerce-cloud/overview/' },
+      { name: 'Experience Cloud', description: 'Build branded portals, forums, and communities for customers and partners', status: 'active', website: 'https://www.salesforce.com/products/experience-cloud/overview/' },
+      { name: 'Tableau', description: 'Visual analytics platform for business intelligence and data visualization', status: 'active', website: 'https://www.tableau.com/' },
+      { name: 'MuleSoft', description: 'Integration platform for connecting applications, data, and devices with APIs', status: 'active', website: 'https://www.mulesoft.com/' },
+      { name: 'Slack', description: 'Team collaboration hub for messaging, file sharing, and workflow automation', status: 'active', website: 'https://slack.com/' },
+      { name: 'Heroku', description: 'Cloud platform for building, deploying, and scaling applications', status: 'active', website: 'https://www.heroku.com/' },
+      { name: 'Data Cloud', description: 'Customer data platform for unifying and activating real-time customer profiles', status: 'active', website: 'https://www.salesforce.com/products/data-cloud/overview/' },
+      { name: 'Einstein AI', description: 'AI-powered analytics, predictions, and recommendations across Salesforce products', status: 'active', website: 'https://www.salesforce.com/artificial-intelligence/' },
+      { name: 'Agentforce', description: 'Autonomous AI agents for customer service, sales, and business automation', status: 'active', website: 'https://www.salesforce.com/agentforce/' },
+      { name: 'Flow Builder', description: 'Declarative automation tool for building business processes without code', status: 'active', website: 'https://help.salesforce.com/s/articleView?id=sf.flow.htm' },
+      { name: 'Apex Developer Guide', description: 'Documentation for Salesforce proprietary programming language for custom logic', status: 'active', website: 'https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/' },
+      { name: 'Lightning Web Components', description: 'Modern JavaScript framework for building Salesforce UI components', status: 'active', website: 'https://developer.salesforce.com/docs/component-library/documentation/en/lwc' },
+      { name: 'SOQL Reference', description: 'Salesforce Object Query Language documentation for data retrieval', status: 'active', website: 'https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/' },
+      { name: 'Trailhead', description: 'Free online learning platform for Salesforce skills and certifications', status: 'active', website: 'https://trailhead.salesforce.com/' },
+      { name: 'AppExchange', description: 'Marketplace for Salesforce apps, components, and consulting partners', status: 'active', website: 'https://appexchange.salesforce.com/' },
+      { name: 'Salesforce CLI', description: 'Command-line interface for Salesforce development and deployment workflows', status: 'inactive', website: 'https://developer.salesforce.com/tools/salesforcecli' },
+      { name: 'Platform Events', description: 'Event-driven architecture for real-time integrations and pub/sub messaging', status: 'active', website: 'https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/' },
+    ];
+
+    const insertQuery = `
+      INSERT INTO public.items (name, description, status, website, is_deleted, created_at, updated_at)
+      VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
+      ON CONFLICT (name) DO NOTHING
+    `;
+
+    for (const item of seedItems) {
+      await client.query(insertQuery, [
+        item.name,
+        item.description,
+        item.status,
+        item.website,
+        item.status === 'inactive'
+      ]);
+    }
+  }
+}
+
 export async function getItems(
   search: string,
   offset: number
