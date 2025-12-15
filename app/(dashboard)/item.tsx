@@ -42,8 +42,8 @@ export function Item({ item, onEdit }: ItemProps) {
     <TableRow className={isPending ? 'opacity-50' : ''}>
       <TableCell className="font-medium">{item.name}</TableCell>
       <TableCell className="hidden md:table-cell">
-        <Badge variant="outline" className={`capitalize ${item.isDeleted ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
-          {item.isDeleted ? 'Inactive' : 'Active'}
+        <Badge variant="outline" className={`capitalize ${item.status === 'inactive' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
+          {item.status === 'inactive' ? 'Inactive' : 'Active'}
         </Badge>
       </TableCell>
       <TableCell>
