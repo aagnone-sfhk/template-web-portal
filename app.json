@@ -16,7 +16,7 @@
   },
   "addons": [
     {
-      "plan": "heroku-postgresql:standard-0"
+      "plan": "heroku-postgresql:standard-4"
     },
     {
       "plan": "heroku-inference:claude-4-5-sonnet"
