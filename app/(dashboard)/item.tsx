@@ -10,13 +10,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { SelectItem } from '@/lib/db';
 import { deleteItem } from './actions';
 import { useTransition } from 'react';
 
-export function Item({ item }: { item: SelectItem }) {
+interface ItemProps {
+  item: SelectItem;
+  onEdit?: (item: SelectItem) => void;
+}
+
+export function Item({ item, onEdit }: ItemProps) {
   const [isPending, startTransition] = useTransition();
 
   function handleDelete() {
@@ -27,6 +32,10 @@ export function Item({ item }: { item: SelectItem }) {
         await deleteItem(formData);
       });
     }
+  }
+
+  function handleEdit() {
+    onEdit?.(item);
   }
 
   return (
@@ -59,7 +68,10 @@ export function Item({ item }: { item: SelectItem }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem disabled>Edit</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleEdit}>
+              <Pencil className="mr-2 h-4 w-4" />
+              Edit
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={handleDelete}

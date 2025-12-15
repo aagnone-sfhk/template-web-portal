@@ -43,11 +43,11 @@
     },
     "NEXT_PUBLIC_LOGO": {
       "description": "Path to logo image",
-      "value": "/constellation.png"
+      "value": "/af.png"
     },
     "NEXT_PUBLIC_AVATAR": {
       "description": "Path to chat avatar image",
-      "value": "/constellation.png"
+      "value": "/af.png"
     }
   }
 }

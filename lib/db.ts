@@ -185,3 +185,141 @@ export async function getRecentActivity() {
     recentItems
   };
 }
+
+// Schema introspection types
+export interface ColumnSchema {
+  name: string;
+  type: string;
+  nullable: boolean;
+  hasDefault: boolean;
+  isPrimaryKey: boolean;
+  maxLength: number | null;
+}
+
+export interface TableSchema {
+  tableName: string;
+  columns: ColumnSchema[];
+}
+
+// Get table schema dynamically from database
+export async function getTableSchema(tableName: string): Promise<TableSchema> {
+  const result = await client.query(`
+    SELECT 
+      c.column_name as name,
+      c.data_type as type,
+      c.is_nullable = 'YES' as nullable,
+      c.column_default IS NOT NULL as has_default,
+      c.character_maximum_length as max_length,
+      COALESCE(
+        (SELECT true FROM information_schema.table_constraints tc
+         JOIN information_schema.key_column_usage kcu 
+         ON tc.constraint_name = kcu.constraint_name
+         WHERE tc.table_name = c.table_name 
+         AND tc.constraint_type = 'PRIMARY KEY'
+         AND kcu.column_name = c.column_name
+         LIMIT 1), false
+      ) as is_primary_key
+    FROM information_schema.columns c
+    WHERE c.table_name = $1 
+    AND c.table_schema = 'public'
+    ORDER BY c.ordinal_position
+  `, [tableName]);
+
+  return {
+    tableName,
+    columns: result.rows.map(row => ({
+      name: row.name,
+      type: row.type,
+      nullable: row.nullable,
+      hasDefault: row.has_default,
+      isPrimaryKey: row.is_primary_key,
+      maxLength: row.max_length
+    }))
+  };
+}
+
+// Get all table names in the public schema
+export async function getTableNames(): Promise<string[]> {
+  const result = await client.query(`
+    SELECT table_name 
+    FROM information_schema.tables 
+    WHERE table_schema = 'public' 
+    AND table_type = 'BASE TABLE'
+    ORDER BY table_name
+  `);
+  return result.rows.map(row => row.table_name);
+}
+
+// Generic create item function
+export async function createItem(data: Omit<InsertItem, 'id' | 'createdAt' | 'updatedAt'>): Promise<SelectItem> {
+  const result = await db
+    .insert(items)
+    .values({
+      ...data,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    })
+    .returning();
+  return result[0];
+}
+
+// Generic update item function
+export async function updateItemById(id: number, data: Partial<Omit<InsertItem, 'id' | 'createdAt'>>): Promise<SelectItem> {
+  const result = await db
+    .update(items)
+    .set({
+      ...data,
+      updatedAt: new Date()
+    })
+    .where(eq(items.id, id))
+    .returning();
+  return result[0];
+}
+
+// Get single item by ID
+export async function getItemById(id: number): Promise<SelectItem | undefined> {
+  const result = await db
+    .select()
+    .from(items)
+    .where(eq(items.id, id))
+    .limit(1);
+  return result[0];
+}
+
+// Dynamic CRUD for any table - useful for future table expansion
+export async function dynamicInsert(tableName: string, data: Record<string, unknown>): Promise<Record<string, unknown>> {
+  const columns = Object.keys(data);
+  const values = Object.values(data);
+  const placeholders = columns.map((_, i) => `$${i + 1}`).join(', ');
+  
+  const result = await client.query(
+    `INSERT INTO public.${tableName} (${columns.join(', ')}, created_at, updated_at) 
+     VALUES (${placeholders}, NOW(), NOW()) 
+     RETURNING *`,
+    values
+  );
+  return result.rows[0];
+}
+
+export async function dynamicUpdate(tableName: string, id: number, data: Record<string, unknown>): Promise<Record<string, unknown>> {
+  const entries = Object.entries(data);
+  const setClause = entries.map(([key], i) => `${key} = $${i + 1}`).join(', ');
+  const values = [...entries.map(([, value]) => value), id];
+  
+  const result = await client.query(
+    `UPDATE public.${tableName} 
+     SET ${setClause}, updated_at = NOW() 
+     WHERE id = $${values.length} 
+     RETURNING *`,
+    values
+  );
+  return result.rows[0];
+}
+
+export async function dynamicGetById(tableName: string, id: number): Promise<Record<string, unknown> | null> {
+  const result = await client.query(
+    `SELECT * FROM public.${tableName} WHERE id = $1 LIMIT 1`,
+    [id]
+  );
+  return result.rows[0] || null;
+}

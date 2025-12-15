@@ -6,7 +6,7 @@ const clientEnvSchema = z.object({
   NEXT_PUBLIC_APP_INTRO_MESSAGE: z.string().min(1).default("Hello! I'm your AI assistant. How can I help you today?"),
   NEXT_PUBLIC_EVENT_HUB_URL: z.string().min(1).default("https://hub.herokuapps.ai"),
   NEXT_PUBLIC_LOGO: z.string().min(1).default("https://hub.herokuapps.ai/images/AmazonBubble.png"),
-  NEXT_PUBLIC_AVATAR: z.string().min(1).default("/constellation.png"),
+  NEXT_PUBLIC_AVATAR: z.string().min(1).default("/af.png"),
   NEXT_PUBLIC_LOGO_ALT: z.string().min(1).default("Admin Portal"),
 });
 

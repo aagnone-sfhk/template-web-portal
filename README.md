@@ -67,8 +67,8 @@ Visit http://localhost:3000 to see your app.
 |----------|---------|-------------|
 | `NEXT_PUBLIC_APP_TITLE` | "Admin Portal" | Application title |
 | `NEXT_PUBLIC_APP_DESCRIPTION` | "Your intelligent AI assistant" | App description |
-| `NEXT_PUBLIC_LOGO` | "/constellation.png" | Logo image path |
-| `NEXT_PUBLIC_AVATAR` | "/constellation.png" | Chat avatar path |
+| `NEXT_PUBLIC_LOGO` | "/af.png" | Logo image path |
+| `NEXT_PUBLIC_AVATAR` | "/af.png" | Chat avatar path |
 
 ### Salesforce AgentForce (Optional)
 
