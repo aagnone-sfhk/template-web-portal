@@ -1,0 +1,34 @@
+---
+description: How to query database data using the postgres MCP server
+alwaysApply: true
+---
+
+- **Use the Postgres MCP server for database queries:**
+  - Look for an MCP tool matching `mcp_*_query` pattern (e.g., `mcp_postgres-myapp_query`)
+  - Prefer MCP tools over running `heroku pg:psql` commands
+  - The MCP server provides safer, restricted read access
+
+- **Salesforce Data Location:**
+  - Synced Salesforce data lives in the `salesforce` schema
+  - Common tables: `salesforce.vendor__c`, `salesforce.account`, etc.
+  - Always prefix table names with `salesforce.` when querying synced SF data
+
+- **Example Queries:**
+  ```sql
+  -- List all tables in salesforce schema
+  SELECT table_name FROM information_schema.tables WHERE table_schema = 'salesforce';
+  
+  -- Describe a table structure
+  SELECT column_name, data_type, is_nullable 
+  FROM information_schema.columns 
+  WHERE table_schema = 'salesforce' AND table_name = 'vendor__c';
+  
+  -- Query data
+  SELECT * FROM salesforce.vendor__c LIMIT 10;
+  ```
+
+- **When to Use:**
+  - Exploring what Salesforce data has been synced
+  - Understanding table schemas before writing code
+  - Verifying data exists before building features
+  - Debugging data-related issues
