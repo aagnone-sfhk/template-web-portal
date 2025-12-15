@@ -1,9 +1,9 @@
 {
-  "name": "Web Portal Template",
-  "description": "A modern admin dashboard with AI chat and PostgreSQL",
+  "name": "Example Partner Portal",
+  "description": "A example internal partner portal with Salesforce synchronization with Heroku Postgres",
   "keywords": ["next.js", "react", "typescript", "postgres", "ai", "heroku"],
-  "website": "https://github.com/heroku/template-web-portal",
-  "repository": "https://github.com/heroku/template-web-portal",
+  "website": "https://github.com/aagnone-sfhk/template-web-portal",
+  "repository": "https://github.com/aagnone-sfhk/template-web-portal",
   "stack": "heroku-24",
   "buildpacks": [
     { "url": "heroku/nodejs" }
@@ -40,7 +40,7 @@
     },
     "NEXT_PUBLIC_APP_DESCRIPTION": {
       "description": "Application description",
-      "value": "Your intelligent AI assistant"
+      "value": "A example internal partner portal with Salesforce synchronization with Heroku Postgres"
     },
     "NEXT_PUBLIC_APP_INTRO_MESSAGE": {
       "description": "Welcome message for AI chat",
