@@ -392,8 +392,8 @@ const Chat: React.FC = () => {
                 )}
               </div>
             </form>
-            <div className="flex items-center gap-4 justify-between text-xs text-gray-500">
-              <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-4 justify-between text-xs text-gray-500 w-full">
+              <div className="flex flex-col gap-2 w-full">
                 {selectedModel !== 'stable-image-ultra' && (
                   <div className="flex flex-col gap-2 items-end">
                     {mcpLoading ? (
