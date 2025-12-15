@@ -8,6 +8,8 @@ const clientEnvSchema = z.object({
   NEXT_PUBLIC_LOGO: z.string().min(1).default("https://hub.herokuapps.ai/images/AmazonBubble.png"),
   NEXT_PUBLIC_AVATAR: z.string().min(1).default("/af.png"),
   NEXT_PUBLIC_LOGO_ALT: z.string().min(1).default("Admin Portal"),
+  // Salesforce Org URL for direct record links (defaults to acme-v2 org)
+  NEXT_PUBLIC_SF_ORG_URL: z.string().url().default("https://dbaliles-250405-464-demo.my.salesforce.com"),
 });
 
 type ClientEnv = z.infer<typeof clientEnvSchema>;
@@ -22,6 +24,7 @@ function validateClientEnv(): ClientEnv {
       NEXT_PUBLIC_LOGO: process.env.NEXT_PUBLIC_LOGO,
       NEXT_PUBLIC_LOGO_ALT: process.env.NEXT_PUBLIC_LOGO_ALT,
       NEXT_PUBLIC_AVATAR: process.env.NEXT_PUBLIC_AVATAR,
+      NEXT_PUBLIC_SF_ORG_URL: process.env.NEXT_PUBLIC_SF_ORG_URL,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
