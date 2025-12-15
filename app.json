@@ -16,8 +16,13 @@
   },
   "addons": [
     {
-      "plan": "heroku-postgresql:essential-0",
-      "as": "DATABASE"
+      "plan": "heroku-postgresql:essential-0"
+    },
+    {
+      "plan": "heroku-inference:claude-4-5-sonnet"
+    },
+    {
+      "plan": "papertrail:choklad"
     }
   ],
   "env": {
@@ -48,6 +53,10 @@
     "NEXT_PUBLIC_AVATAR": {
       "description": "Path to chat avatar image",
       "value": "/af.png"
+    },
+    "NEXT_PUBLIC_LOGO_ALT": {
+      "description": "Alt text for logo image (accessibility)",
+      "value": "Partner Portal"
     }
   }
 }
