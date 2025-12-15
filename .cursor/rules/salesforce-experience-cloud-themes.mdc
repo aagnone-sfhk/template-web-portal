@@ -1,0 +1,71 @@
+---
+alwaysApply: true
+description: How to retrieve Experience Cloud site themes and branding from Salesforce orgs
+globs: force-app/**/*.json, sfdx-project.json
+alwaysApply: false
+---
+
+- **Prerequisites**
+  - Salesforce CLI (`sf`) installed
+  - Authenticated to target org: `sf org login web --alias <org-alias>`
+  - SFDX project initialized (see below)
+
+- **Initialize SFDX Project (if needed)**
+  - Create `sfdx-project.json` in workspace root:
+  ```json
+  {
+    "packageDirectories": [{ "path": "force-app", "default": true }],
+    "namespace": "",
+    "sfdcLoginUrl": "https://login.salesforce.com",
+    "sourceApiVersion": "62.0"
+  }
+  ```
+  - Create directory: `mkdir -p force-app/main/default`
+
+- **List Available Experience Sites**
+  ```shell
+  sf org list metadata --metadata-type ExperienceBundle --target-org <org-alias> --json
+  ```
+  - Returns all Experience Sites with their API names (often have `1` suffix, e.g., `Partner_Portal1`)
+
+- **Retrieve Complete Experience Bundle**
+  ```shell
+  sf project retrieve start --metadata 'ExperienceBundle:<SiteName>' --target-org <org-alias>
+  ```
+  - Replace `<SiteName>` with exact API name from list command
+
+- **Retrieved Structure**
+  ```
+  force-app/main/default/experiences/<SiteName>/
+  ├── brandingSets/          # Color palettes, fonts, logo references
+  │   └── <theme>.json
+  ├── config/                # Site configuration
+  │   ├── languages.json
+  │   ├── mainAppPage.json
+  │   └── ...
+  ├── routes/                # URL route definitions
+  ├── themes/                # Theme layouts and component configs
+  │   └── <theme>.json
+  ├── views/                 # Page view definitions
+  └── <SiteName>.site-meta.xml
+  ```
+
+- **Key Theme Files**
+  - **`themes/<theme>.json`**: Layout definitions, component configurations, header/footer structure
+  - **`brandingSets/<theme>.json`**: Colors, fonts, logo, navigation styling
+
+- **Retrieve Just Theme Definition (Alternative)**
+  ```shell
+  sf org list metadata --metadata-type CommunityThemeDefinition --target-org <org-alias> --json
+  sf project retrieve start --metadata 'CommunityThemeDefinition:<ThemeName>' --target-org <org-alias>
+  ```
+
+- **Common Issues**
+  - ❌ "Entity not found" → API name differs from display name; use list command first
+  - ❌ "Not a valid Salesforce DX project" → Create `sfdx-project.json` and `force-app` directory
+  - ❌ Authentication error → Re-authenticate: `sf org login web --alias <org-alias>`
+
+- **Deploy Modified Theme**
+  ```shell
+  sf project deploy start --source-dir force-app/main/default/experiences/<SiteName> --target-org <org-alias>
+  ```
