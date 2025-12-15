@@ -1,4 +1,3 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getItems } from '@/lib/db';
 import { ItemsTable } from '../items-table';
 
@@ -16,25 +15,11 @@ export default async function ItemsPage(
   );
 
   return (
-    <Tabs defaultValue="all">
-      <div className="flex items-center">
-        <TabsList>
-          <TabsTrigger value="all">All</TabsTrigger>
-          <TabsTrigger value="active">Active</TabsTrigger>
-          <TabsTrigger value="draft">Draft</TabsTrigger>
-          <TabsTrigger value="archived" className="hidden sm:flex">
-            Archived
-          </TabsTrigger>
-        </TabsList>
-      </div>
-      <TabsContent value="all">
-        <ItemsTable
-          items={items}
-          offset={newOffset ?? 0}
-          totalItems={totalItems}
-        />
-      </TabsContent>
-    </Tabs>
+    <ItemsTable
+      items={items}
+      offset={newOffset ?? 0}
+      totalItems={totalItems}
+    />
   );
 }
 
