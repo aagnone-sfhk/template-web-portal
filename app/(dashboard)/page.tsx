@@ -160,8 +160,8 @@ export default async function DashboardPage() {
                           </p>
                         </div>
                       </div>
-                      <Badge variant={item.isDeleted ? "destructive" : "default"}>
-                        {item.isDeleted ? 'Inactive' : 'Active'}
+                      <Badge variant={item.status === 'inactive' ? "destructive" : "default"}>
+                        {item.status === 'inactive' ? 'Inactive' : 'Active'}
                       </Badge>
                     </div>
                   ))}
