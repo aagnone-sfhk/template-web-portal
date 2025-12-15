@@ -7,8 +7,7 @@ import {
   text,
   varchar,
   timestamp,
-  serial,
-  boolean
+  serial
 } from 'drizzle-orm/pg-core';
 import { count, eq, ilike, desc } from 'drizzle-orm';
 
@@ -31,7 +30,6 @@ export const items = pgTable('items', {
   status: varchar('status', { length: 50 }).default('active'),
   website: varchar('website', { length: 255 }),
   imageUrl: varchar('image_url', { length: 255 }),
-  isDeleted: boolean('is_deleted').default(false),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
@@ -49,7 +47,6 @@ export async function ensureItemsTable(): Promise<void> {
       status VARCHAR(50) DEFAULT 'active',
       website VARCHAR(255),
       image_url VARCHAR(255),
-      is_deleted BOOLEAN DEFAULT FALSE,
       created_at TIMESTAMP DEFAULT NOW(),
       updated_at TIMESTAMP DEFAULT NOW()
     )
@@ -96,8 +93,8 @@ export async function ensureItemsTable(): Promise<void> {
     ];
 
     const insertQuery = `
-      INSERT INTO public.items (name, description, status, website, is_deleted, created_at, updated_at)
-      VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
+      INSERT INTO public.items (name, description, status, website, created_at, updated_at)
+      VALUES ($1, $2, $3, $4, NOW(), NOW())
       ON CONFLICT (name) DO NOTHING
     `;
 
@@ -106,8 +103,7 @@ export async function ensureItemsTable(): Promise<void> {
         item.name,
         item.description,
         item.status,
-        item.website,
-        item.status === 'inactive'
+        item.website
       ]);
     }
   }
@@ -163,7 +159,7 @@ export async function deleteItemById(id: number) {
 export async function getDashboardStats() {
   const [totalItems, activeItems, recentItems] = await Promise.all([
     db.select({ count: count() }).from(items),
-    db.select({ count: count() }).from(items).where(eq(items.isDeleted, false)),
+    db.select({ count: count() }).from(items).where(eq(items.status, 'active')),
     db.select().from(items).orderBy(desc(items.createdAt)).limit(5)
   ]);
 
