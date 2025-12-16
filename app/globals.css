@@ -90,3 +90,80 @@ input[type='search']::-moz-search-cancel-button {
 input[type='search']::-ms-clear {
   display: none;
 }
+
+/* Login page animations */
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(30px, -30px) scale(1.05);
+  }
+  50% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
+  75% {
+    transform: translate(20px, 10px) scale(1.02);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes bounce-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+.animate-float {
+  animation: float 20s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 30s linear infinite;
+}
+
+.animate-spin-reverse {
+  animation: spin-reverse 25s linear infinite;
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 6s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 8s ease-in-out infinite;
+}
