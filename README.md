@@ -1,14 +1,14 @@
 # Web Portal Template
 
-<a href="https://deploy.herokuapps.ai?template=https://github.com/aagnone-sfhk/template-web-portal">
-    <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy to Heroku">
-</a>
-
 A modern, full-featured admin dashboard template built with Next.js 15, featuring AI chat capabilities, database integration, and a clean UI.
 
 ![Architecture Diagram](etc/diagram.png)
 
 ## Tech Stack
+
+<a href="https://deploy.herokuapps.ai?template=https://github.com/aagnone-sfhk/template-web-portal">
+    <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy to Heroku">
+</a>
 
 - **Framework**: [Next.js 15](https://nextjs.org) (App Router with Turbopack)
 - **Language**: [TypeScript](https://www.typescriptlang.org)
