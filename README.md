@@ -6,6 +6,8 @@
 
 A modern, full-featured admin dashboard template built with Next.js 15, featuring AI chat capabilities, database integration, and a clean UI.
 
+![Architecture Diagram](etc/diagram.png)
+
 ## Tech Stack
 
 - **Framework**: [Next.js 15](https://nextjs.org) (App Router with Turbopack)
